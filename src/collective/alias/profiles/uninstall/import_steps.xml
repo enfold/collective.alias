@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<import-steps>
+    <import-step id="collective.alias.uninstall" version="3"
+        handler="collective.alias.exportimport.uninstall"
+        title="Uninstall step for collective.alias">
+    </import-step>
+</import-steps>

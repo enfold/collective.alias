@@ -32,6 +32,7 @@ setup(name='collective.alias',
           'plone.contentrules',
           'plone.directives.dexterity',
           'plone.portlets',
+          'plone.formwidget.contenttree',
       ],
       extras_require={
           'test': [

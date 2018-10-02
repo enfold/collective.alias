@@ -15,7 +15,7 @@ from zope.interface.declarations import ObjectSpecificationDescriptor
 from zope.component import queryUtility
 from zope.annotation.interfaces import IAnnotations
 
-from zope.app.container.contained import Contained
+from zope.container.contained import Contained
 
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
@@ -257,7 +257,7 @@ class Alias(CMFCatalogAware, CMFOrderedBTreeFolderBase, PortalContent, Contained
     # Evil hacks
 
     @property
-    def __class__(self):
+    def __klass__(self):
         """/me whistles and looks to the sky whilst walking slowly backwards,
         hoping no-one noticed what I just did
         """

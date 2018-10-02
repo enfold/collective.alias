@@ -16,8 +16,7 @@ from zope.intid.interfaces import IIntIds
 
 from plone.dexterity.utils import createContent
 
-# XXX: Should move to zope.container in the future
-from zope.app.container.interfaces import INameChooser
+from zope.container.interfaces import INameChooser
 
 def pasteAsAlias(context, cb_copy_data=None, request=None):
     """Paste the clipboard contents as an alias. Either pass the data, or a
@@ -59,9 +58,8 @@ def pasteAsAlias(context, cb_copy_data=None, request=None):
 
     for ob in oblist:
         relation = RelationValue(intids.getId(ob))
-        alias = createContent('collective.alias', _aliasTarget=relation)
-
-        notify(ObjectCreatedEvent(alias))
+        alias = createContent('collective.alias')
+        alias._aliasTarget = relation
 
         name = INameChooser(context).chooseName(ob.getId(), alias)
         alias.id = name
