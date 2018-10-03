@@ -25,6 +25,12 @@ These aspects include:
   * Display template (set via the `display` menu)
   * Portlets
 
+Plone 5 Support
+---------------
+
+The latest version of the package supports Plone 5. At the moment, Plone 4
+or Plone 3 support is not guaranteed.
+
 Upgrade from Plone 3 to Plone 4
 -------------------------------
 
@@ -110,22 +116,11 @@ Known issues:
 
 The following known issues exist:
 
+ * Setting the Alias content type as not searchable does not work at the
+   moment. Alias content always appears in searches.
+
  * At the time of writing (Dexterity 1.0a2) it is not possible to create an
    Archetypes reference (e.g. the standard "Related items" field on an
    Archetypes content object, including Plone 3's default types) to an alias.
    This is due to an incompatibility between Dexterity and the Archetypes
    reference implementation.
-
-To do:
-------
-
- * It's not possible to edit an Alias. 
-   Changes in Plone [1_, 2_] require a new way to generate the object tabs.
-   The way this issue was addressed in Products.Collage [3_] doesn't work here,
-   because `viewlet = provider.__getitem__("plone.contentviews")` returns a
-   collective.alias.browser.ContentViews object, which doesn't have the
-   prepareObjectTabs method.
-
-.. _1: http://dev.plone.org/plone/changeset/33984
-.. _2: http://dev.plone.org/plone/changeset/33984
-.. _3: http://dev.plone.org/collective/changeset/111545/Products.Collage/trunk/Products/Collage/browser

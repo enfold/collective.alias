@@ -4,7 +4,7 @@
         <object name="paste_alias" meta_type="CMF Action" i18n:domain="collective.alias">
         <property name="title" i18n:translate="">Paste as alias</property>
         <property name="description" i18n:translate="">Create an alias of the data on the clipboard</property>
-        <property name="url_expr">string:@@paste-alias</property>
+        <property name="url_expr">string:${object_url}/paste-alias</property>
         <property name="available_expr">folder/cb_dataValid|nothing</property>
         <property name="permissions">
             <element value="collective.alias: Add Alias"/>

@@ -6,6 +6,7 @@ from z3c.relationfield.event import updateRelations
 from z3c.relationfield.interfaces import IHasRelations
 
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.utils import getFSVersionTuple
 
 from collective.alias.interfaces import IAlias
 
@@ -39,4 +40,9 @@ def add_uuid(context):
 
 def upgrade_actions(context):
     context.runImportStepFromProfile('profile-collective.alias:default',
+                                     'actions')
+
+def upgrade_urlexpr(context):
+    if getFSVersionTuple()[0] > 4:
+        context.runImportStepFromProfile('profile-collective.alias:plone5',
                                      'actions')

@@ -5,8 +5,7 @@ import new
 from persistent.mapping import PersistentMapping
 from rwproperty import getproperty, setproperty
 
-from five import grok
-
+from zope.interface import implements
 from zope.interface.declarations import implementedBy
 from zope.interface.declarations import providedBy
 from zope.interface.declarations import getObjectSpecification
@@ -16,8 +15,6 @@ from zope.component import queryUtility
 from zope.annotation.interfaces import IAnnotations
 
 from zope.container.contained import Contained
-
-from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
 from zope.intid.interfaces import IIntIds
 
@@ -53,6 +50,7 @@ _marker = object()
 
 logger = logging.getLogger('collective.alias')
 
+
 class DelegatingSpecification(ObjectSpecificationDescriptor):
     """A __providedBy__ decorator that returns the interfaces provided by
     the object, plus those of the cached object.
@@ -83,13 +81,13 @@ class DelegatingSpecification(ObjectSpecificationDescriptor):
         # If the instance doesn't have a __provides__ attribute, get the
         # interfaces implied by the class as a starting point.
         if provided is None:
-            assert cls == Alias # XXX: remove
+            assert cls == Alias  # XXX: remove
             provided = implementedBy(cls)
 
         # Add the interfaces provided by the target
         target = aq_base(inst._target)
         if target is None:
-            return provided # don't cache yet!
+            return provided  # don't cache yet!
 
         # Add the interfaces provided by the target, but take away
         # IHasAlias if set
@@ -103,7 +101,7 @@ class DelegatingSpecification(ObjectSpecificationDescriptor):
 
 
 class Alias(CMFCatalogAware, CMFOrderedBTreeFolderBase, PortalContent, Contained):
-    grok.implements(IAlias, IDexterityContent, IHasRelations, IUUIDAware, IAttributeUUID)
+    implements(IAlias, IDexterityContent, IHasRelations, IUUIDAware, IAttributeUUID)
 
     __providedBy__ = DelegatingSpecification()
     _alias_portal_type = None
@@ -369,7 +367,6 @@ class Alias(CMFCatalogAware, CMFOrderedBTreeFolderBase, PortalContent, Contained
 
         return aliased
 
-@grok.subscribe(IAlias, IObjectModifiedEvent)
 def clearCaches(obj, event):
     """If the alias is modified, clear the _v_ attribute caches
     """

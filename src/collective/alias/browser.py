@@ -1,6 +1,5 @@
 from rwproperty import getproperty, setproperty
 
-from five import grok
 from plone.directives import dexterity
 
 from zope.component import getUtility
@@ -13,21 +12,18 @@ from Acquisition import aq_inner
 from AccessControl import Unauthorized
 
 from plone.app.layout.viewlets.common import ContentViewsViewlet
-from plone.app.layout.viewlets.interfaces import IToolbar
 
 from plone.registry.interfaces import IRegistry
 
-from collective.alias.interfaces import IAlias
 from collective.alias.interfaces import IAliasSettings
 
 from collective.alias import MessageFactory as _
+
 
 class Add(dexterity.AddForm):
     """Override the add form not to depend on the portal_type once the
     object has been created.
     """
-
-    grok.name('collective.alias')
 
     def add(self, object):
 
@@ -68,12 +64,10 @@ class Add(dexterity.AddForm):
         if '_aliasTraversal' in self.fields:
             del self.fields['_aliasTraversal']
 
+
 class Edit(dexterity.EditForm):
     """Override the edit form not to depend on the portal_type
     """
-
-    grok.context(IAlias)
-    grok.name('edit')
 
     label = _(u"Edit alias")
 
@@ -95,15 +89,11 @@ class Edit(dexterity.EditForm):
         if '_aliasTarget' in self.fields:
             del self.fields['_aliasTarget']
 
+
 class ContentViews(ContentViewsViewlet):
     """Override the content views (edit tabs) viewlet to ensure that we only
     get the "edit" action for the alias.
     """
-
-    grok.context(IAlias)
-    grok.require('zope2.View')
-    grok.name('plone.contentviews')
-    grok.viewletmanager(IToolbar)
 
     def update(self):
         super(ContentViews, self).update()

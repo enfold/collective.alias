@@ -1,14 +1,9 @@
-from five import grok
-
 from Acquisition import aq_inner
+from Products.Five.browser import BrowserView
 
 from OFS.CopySupport import _cb_decode
-from OFS.interfaces import IObjectManager
 
 import OFS.Moniker
-
-from zope.event import notify
-from zope.lifecycleevent import ObjectCreatedEvent
 
 from zope.component import getUtility
 from z3c.relationfield import RelationValue
@@ -17,6 +12,7 @@ from zope.intid.interfaces import IIntIds
 from plone.dexterity.utils import createContent
 
 from zope.container.interfaces import INameChooser
+
 
 def pasteAsAlias(context, cb_copy_data=None, request=None):
     """Paste the clipboard contents as an alias. Either pass the data, or a
@@ -27,7 +23,7 @@ def pasteAsAlias(context, cb_copy_data=None, request=None):
 
     if cb_copy_data is not None:
         cp = cb_copy_data
-    elif request and request.has_key('__cp'):
+    elif request and '__cp' in request:
         cp = request['__cp']
     else:
         cp = None
@@ -72,17 +68,18 @@ def pasteAsAlias(context, cb_copy_data=None, request=None):
 
     return ' '.join(success) + ' '.join(failed)
 
-class PasteAsAlias(grok.View):
+
+class PasteAsAlias(BrowserView):
     """View used as an action for pasting the clipboard contents as aliases
     """
-    grok.context(IObjectManager)
-    grok.name('paste-alias')
-    grok.require('collective.alias.AddAlias')
 
     def update(self):
-        message = pasteAsAlias(context=aq_inner(self.context), request=self.request)
+        message = pasteAsAlias(context=aq_inner(self.context),
+                               request=self.request)
         self.request.response.redirect(self.context.absolute_url())
 
     def render(self):
         return ''
 
+    def __call__(self):
+        self.update()

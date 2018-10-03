@@ -1,21 +1,12 @@
 import logging
 
-from five import grok
-
 from zope.interface import alsoProvides
 from zope.interface import noLongerProvides
 
 from zope.component import queryUtility
 
-from zope.lifecycleevent.interfaces import IObjectAddedEvent
-from zope.lifecycleevent.interfaces import IObjectModifiedEvent
-from zope.lifecycleevent.interfaces import IObjectCopiedEvent
-from zope.lifecycleevent.interfaces import IObjectCreatedEvent
-from zope.lifecycleevent.interfaces import IObjectRemovedEvent
 
 from zope.lifecycleevent import ObjectModifiedEvent
-
-from OFS.interfaces import IObjectWillBeRemovedEvent
 
 from zope.intid.interfaces import IIntIds
 from zc.relation.interfaces import ICatalog
@@ -33,9 +24,7 @@ from zope.event import notify
 
 logger = logging.getLogger('collective.alias')
 
-# Event delegation
 
-@grok.subscribe(IHasAlias, IObjectModifiedEvent)
 def rebroadcastModifiedEvent(obj, event):
     """When an object with an alias is modified, consider the alias modified
     as well. This will e.g.
@@ -46,9 +35,9 @@ def rebroadcastModifiedEvent(obj, event):
             new_event = ObjectModifiedEvent(alias, *event.descriptions)
             notify(new_event)
 
+
 # Set the _aliasTraversal flag based on type defaults
 
-@grok.subscribe(IAlias, IObjectCreatedEvent)
 def setAliasTraversal(alias, event):
     """When the alias is create, set the _aliasTraversal attribute according
     to the settings in the registry.
@@ -66,9 +55,9 @@ def setAliasTraversal(alias, event):
     if alias.portal_type in settings.traversalTypes:
         alias._aliasTraversal = True
 
+
 # Manage the IHasAlias marker
 
-@grok.subscribe(IAlias, IObjectAddedEvent)
 def markTargetOnAdd(alias, event):
     """When the alias is added, mark the target with IHasAlias
     """
@@ -78,7 +67,6 @@ def markTargetOnAdd(alias, event):
         alsoProvides(target, IHasAlias)
 
 
-@grok.subscribe(IAlias, IObjectRemovedEvent)
 def unmarkTargetOnRemove(alias, event):
     """When the alias is created,
     """
@@ -110,7 +98,6 @@ def unmarkTargetOnRemove(alias, event):
         noLongerProvides(target, IHasAlias)
 
 
-@grok.subscribe(IHasAlias, IObjectCopiedEvent)
 def unmarkCopy(obj, event):
     """If an object is copied, remove the marker. At this point, we don't
     have an intid yet, so we can't add an alias anyway. It's possible an
@@ -120,9 +107,9 @@ def unmarkCopy(obj, event):
     """
     noLongerProvides(event.object, IHasAlias)
 
+
 # Handle deletion
 
-@grok.subscribe(IHasAlias, IObjectWillBeRemovedEvent)
 def removeAliasOnDelete(obj, event):
     """When an object with an alias is removed, remove all aliases as well.
     """

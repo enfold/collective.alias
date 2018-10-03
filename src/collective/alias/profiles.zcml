@@ -70,4 +70,17 @@
 
   </genericsetup:upgradeSteps>
 
+  <genericsetup:upgradeSteps
+      source="3"
+      destination="4"
+      profile="collective.alias:default">
+
+    <genericsetup:upgradeStep
+        title="Upgrade collective.alias content menu action."
+        description="Modify url_expr of object_buttons/paste_alias action."
+        handler=".upgrade.upgrade_urlexpr"
+        />
+
+  </genericsetup:upgradeSteps>
+
 </configure>
