@@ -56,6 +56,12 @@
       />
 
   <adapter
+      for="collective.alias.interfaces.IAlias"
+      provides="plone.app.discussion.interfaces.IConversation"
+      factory=".annotations.conversationAdapterFactory"
+      />
+
+  <adapter
       for="collective.alias.interfaces.IHasAlias"
       provides="collective.alias.interfaces.IAliasInformation"
       factory=".info.AliasInformation"

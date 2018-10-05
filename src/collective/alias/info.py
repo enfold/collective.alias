@@ -17,6 +17,9 @@ class AliasInformation(object):
 
     implements(IAliasInformation)
 
+    def __init__(self, context):
+        self.context = context
+
     def findAliases(self, interface=IAlias):
 
         intids = queryUtility(IIntIds)

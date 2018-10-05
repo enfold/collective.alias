@@ -12,6 +12,7 @@ from zope.interface.declarations import getObjectSpecification
 from zope.interface.declarations import ObjectSpecificationDescriptor
 
 from zope.component import queryUtility
+from zope.component.interfaces import ComponentLookupError
 from zope.annotation.interfaces import IAnnotations
 
 from zope.container.contained import Contained
@@ -110,7 +111,7 @@ class Alias(CMFCatalogAware, CMFOrderedBTreeFolderBase, PortalContent, Contained
     cmf_uid = None
 
     _aliasTitle = ''
-    _aliasTraversal = False
+    _aliasTraversal = True
 
     # to make debugging easier
     isAlias = True
@@ -162,16 +163,30 @@ class Alias(CMFCatalogAware, CMFOrderedBTreeFolderBase, PortalContent, Contained
 
     @property
     def isPrincipiaFolderish(self):
-        aliased = self._target
+        try:
+            aliased = self._target
+        except ComponentLookupError:
+            aliased = None
         if aliased is None:
             return 0
         return aq_inner(aliased).isPrincipiaFolderish
 
     # Support for _aliasTraversal
 
-    def _getOb(self, id, default=_marker):
+    @property
+    def __dav_collection__(self):
         if self._aliasTraversal:
             aliased = self._target
+            if aliased is not None:
+                return aliased.__dav_collection__
+        return CMFOrderedBTreeFolderBase.__dav_collection__
+
+    def _getOb(self, id, default=_marker):
+        if self._aliasTraversal:
+            try:
+                aliased = self._target
+            except ComponentLookupError:
+                aliased = None
             if aliased is not None:
                 obj = aliased._getOb(id, default)
                 if obj is default:
@@ -183,14 +198,20 @@ class Alias(CMFCatalogAware, CMFOrderedBTreeFolderBase, PortalContent, Contained
 
     def objectIds(self, spec=None, ordered=True):
         if self._aliasTraversal:
-            aliased = self._target
+            try:
+                aliased = self._target
+            except ComponentLookupError:
+                return []
             if aliased is not None:
                 return aliased.objectIds(spec)
         return CMFOrderedBTreeFolderBase.objectIds(self, spec, ordered)
 
     def __getitem__(self, key):
         if self._aliasTraversal:
-            aliased = self._target
+            try:
+                aliased = self._target
+            except ComponentLookupError:
+                aliased = None
             if aliased is not None:
                 return aliased.__getitem__(key)
         return CMFOrderedBTreeFolderBase.__getitem__(self, key)

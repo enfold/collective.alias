@@ -4,6 +4,7 @@ from zope.interface import alsoProvides
 from zope.interface import noLongerProvides
 
 from zope.component import queryUtility
+from zope.component.interfaces import ComponentLookupError
 
 
 from zope.lifecycleevent import ObjectModifiedEvent
@@ -70,7 +71,10 @@ def markTargetOnAdd(alias, event):
 def unmarkTargetOnRemove(alias, event):
     """When the alias is created,
     """
-    target = aq_inner(alias._target)
+    try:
+        target = aq_inner(alias._target)
+    except ComponentLookupError:
+        target = None
     if target is not None and IHasAlias.providedBy(target):
 
         intids = queryUtility(IIntIds)

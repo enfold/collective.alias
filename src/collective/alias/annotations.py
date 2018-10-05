@@ -4,11 +4,14 @@ from BTrees.OIBTree import OIBTree
 from BTrees.OOBTree import OOBTree
 
 from Acquisition import aq_inner
+from Acquisition import aq_base
 from UserDict import DictMixin
 
 from zope.annotation.interfaces import IAnnotations
 from zope.interface import implements
 
+from plone.app.discussion.conversation import Conversation
+from plone.app.discussion.interfaces import IConversation
 from plone.folder.default import DefaultOrdering
 from plone.contentrules.engine.assignments import KEY as CONTENTRULES_KEY
 from plone.portlets.constants import CONTEXT_ASSIGNMENT_KEY
@@ -82,6 +85,12 @@ class AliasAnnotations(DictMixin):
         except AttributeError:
             raise KeyError(key)
         del annotations[key]
+
+
+def conversationAdapterFactory(content):
+    conversation = Conversation()
+    conversation.__parent__ = aq_base(content)
+    return conversation.__of__(content)
 
 
 def initializeAnnotations(obj, event):
