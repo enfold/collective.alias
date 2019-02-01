@@ -1,6 +1,13 @@
 Changelog
 =========
 
+2.0 (unreleased)
+----------------
+
+- Update paste as alias url to be on the parent folder if current object is not
+  folderish.
+
+
 1.4 (unreleased)
 ----------------
 
